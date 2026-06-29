@@ -219,6 +219,14 @@ local function getCleanPlayerName(player)
 	return (getPlayerName(player) or ""):gsub("#%x%x%x%x%x%x", "");
 end
 
+local function getLocalPlayerBlipColor()
+	if (cfg.colors and cfg.colors.player) then
+		return cfg.colors.player[1], cfg.colors.player[2], cfg.colors.player[3], cfg.colors.player[4] or 255;
+	end
+
+	return 255, 255, 255, 255;
+end
+
 local function drawPlayerNameLabel(name, x, y, color)
 	local padding = 5;
 	local textScale = 1;
@@ -855,7 +863,8 @@ addEventHandler('onClientRender', root,
 
 				if (blipX >= Bigmap.PosX and blipX <= Bigmap.PosX + Bigmap.Width) then
 					if (blipY >= Bigmap.PosY and blipY <= Bigmap.PosY + Bigmap.Height) then
-						dxDrawImage(blipX - (cfg.arrowSize/2), blipY - (cfg.arrowSize/2), cfg.arrowSize, cfg.arrowSize, cfg.arrowImage, 360 - playerRotation);
+						local playerR, playerG, playerB, playerA = getLocalPlayerBlipColor();
+						dxDrawImage(blipX - (cfg.arrowSize/2), blipY - (cfg.arrowSize/2), cfg.arrowSize, cfg.arrowSize, cfg.arrowImage, 360 - playerRotation, 0, 0, tocolor(playerR, playerG, playerB, playerA));
 					end
 				end
 
@@ -1069,7 +1078,8 @@ addEventHandler('onClientRender', root,
 
 				--> Local player
 				local arrowSize = scaleMinimapValue(cfg.arrowSize, 8);
-				dxDrawImage((Minimap.PosX + (Minimap.Width / 2)) - (arrowSize/2), (Minimap.PosY + (Minimap.Height / 2)) - (arrowSize/2), arrowSize, arrowSize, cfg.arrowImage, math.deg(-pRotation) - playerRotation);
+				local playerR, playerG, playerB, playerA = getLocalPlayerBlipColor();
+				dxDrawImage((Minimap.PosX + (Minimap.Width / 2)) - (arrowSize/2), (Minimap.PosY + (Minimap.Height / 2)) - (arrowSize/2), arrowSize, arrowSize, cfg.arrowImage, math.deg(-pRotation) - playerRotation, 0, 0, tocolor(playerR, playerG, playerB, playerA));
 
 				--> Zoom (minimap) -- FIX: original used (getTickCount()-(getTickCount()+50))
 				--  which is always -50, giving a fixed +/-0.5 step regardless of
